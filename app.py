@@ -1,31 +1,37 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Body
 
 app = FastAPI()
 
 @app.post("/reset")
-def reset():
-    return {"status": "reset"}
+async def reset(request: Request):
+    try:
+        await request.json()
+    except:
+        pass
+    return {"status": "ok"}
+
 
 @app.post("/step")
-def step(input_text: str):
+async def step(request: Request, data: dict = Body(default={})):
+    try:
+        body = await request.json()
+    except:
+        body = {}
 
-    text = input_text.lower()
+    input_text = body.get("input_text") or data.get("input_text") or request.query_params.get("input_text", "")
+    input_text = input_text.lower()
 
-    # Simple rule-based logic (SAFE)
-    if "5" in text and "1" in text:
-        decision = "minimize total casualties by saving more lives"
+    if "5" in input_text and "1" in input_text:
+        decision = "minimize total casualties"
         ethical = 0.9
-    elif "risk" in text:
-        decision = "choose option with lower overall risk"
+    elif "risk" in input_text:
+        decision = "choose lower risk option"
         ethical = 0.8
-    elif "pedestrian" in text:
-        decision = "prioritize minimizing harm to pedestrians"
-        ethical = 0.85
     else:
-        decision = "act to minimize harm"
+        decision = "minimize harm"
         ethical = 0.75
 
-    risk = min(len(text) / 100, 1.0)
+    risk = min(len(input_text) / 100, 1.0)
     justification = 0.8
 
     return {
@@ -36,6 +42,7 @@ def step(input_text: str):
             "justification": justification
         }
     }
+
 
 @app.get("/state")
 def state():
