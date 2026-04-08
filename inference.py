@@ -1,7 +1,11 @@
 import requests
 import os
+from openai import OpenAI  # DO NOT initialize
 
-API_BASE_URL = "http://localhost:7860"
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:7860")
+MODEL_NAME = os.getenv("MODEL_NAME", "dummy-model")
+HF_TOKEN = os.getenv("HF_TOKEN")
+
 
 tasks = [
     "save 5 people vs 1 person",
