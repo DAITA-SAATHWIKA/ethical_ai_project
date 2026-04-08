@@ -1,0 +1,7 @@
+name: ethical-ai-engine
+description: simple ethical decision system
+
+endpoints:
+  - /step
+  - /reset
+  - /state
